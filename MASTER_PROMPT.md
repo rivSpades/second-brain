@@ -9,7 +9,7 @@
 > arquitetura; `log.md` é só histórico de eventos. Este ficheiro é o
 > retrato atual.
 
-Última sincronização: 2026-07-08.
+Última sincronização: 2026-07-17.
 
 ## 0 · Princípio
 
@@ -197,11 +197,12 @@ Ao recriar numa máquina nova: garantir pasta `context/` com `react-frontend.md`
 
 ## 10 · Fecho / verificação
 
-Nem `~` nem `~/brain` são repositórios git nesta máquina — não há
-`.gitignore` a manter. **Se isso mudar** (ex. `~/brain` passar a repo git
-para sync entre máquinas), adicionar `brain/` ao `.gitignore` do
-repositório que o contiver, e atualizar este ficheiro a registar esse
-novo repo.
+`~/brain` é o próprio repositório git (`rivSpades/second-brain` no
+GitHub) — portável entre máquinas por `git clone`/`pull`, não por cópia
+manual. `~` continua a não ser um repositório git. Se `~/brain` alguma
+vez passar a viver dentro de outro repo (ex. como submódulo ou pasta de
+um monorepo), adicionar `brain/` ao `.gitignore` desse repositório
+contentor e atualizar este ficheiro a registar essa mudança.
 
 Como confirmar que está ativo:
 - Perguntar ao agente "qual é o STATUS do brain?" (deve responder ON/OFF
