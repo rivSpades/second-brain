@@ -9,7 +9,7 @@
 > arquitetura; `log.md` é só histórico de eventos. Este ficheiro é o
 > retrato atual.
 
-Última sincronização: 2026-07-17.
+Última sincronização: 2026-07-20.
 
 ## 0 · Princípio
 
@@ -125,7 +125,11 @@ Fonte remota: `http://git.planning4life.intranet/ricclemente/org-context`
 (Gitea self-hosted, raw HTTP sem autenticação). `org-context.md` lista os
 URLs a fazer fetch (AGENTS.md, security-policy.md, coding-standards.md,
 glossary.md, skills.md, e os SKILL.md de review/**commit-push**/context-migration/
-security-review) e instrui a tratá-los como vinculativos.
+security-review/**codebase-review**) e instrui a tratá-los como vinculativos.
+
+**Cursor (e Codex / só-fetch):** canal **único** = HTTP raw a cada sessão.
+**Proibido** usar `~/.claude/plugins/cache/org-context/**` — mesmo que o IDE
+injecte esses paths em available_skills, o agente ignora e faz fetch.
 
 Precedência em conflito: regras do projeto atual > `org-context.md` >
 nada. `security-policy.md` nunca é contornável.
@@ -133,35 +137,19 @@ nada. `security-policy.md` nunca é contornável.
 Se os URLs não forem alcançáveis (sem VPN/rede), avisar e continuar sem
 esse contexto — nunca simular o conteúdo.
 
-**Espelho como plugins do Claude Code**: o mesmo repo `org-context` está
-também instalado como marketplace de plugins (`extraKnownMarketplaces` em
-`~/.claude/settings.json`, source git para o mesmo repo), com 3 plugins
-habilitados em `enabledPlugins`:
-- `code-standards@org-context` → skills `commit-push`, `review`
-- `project-setup@org-context` → skill `context-migration`
-- `security@org-context` → skill `security-review`
-
-Isto dá as mesmas skills tanto via fetch HTTP direto (para agentes sem
-suporte a plugins, ex. Codex) como via mecanismo nativo de plugins do
-Claude Code (autoinvocação por descrição, sem precisar de fetch manual).
-Ao recriar num Claude Code novo: instalar o marketplace
-`org-context` (`git.planning4life.intranet/ricclemente/org-context.git`) e
-habilitar os 3 plugins acima.
+**Espelho só para Claude Code**: o mesmo repo está também instalado como
+marketplace de plugins (`extraKnownMarketplaces` em `~/.claude/settings.json`),
+com plugins em `enabledPlugins` (code-standards, project-setup, security,
+codebase-review, …). Esse cache **não** alimenta o Cursor.
 
 ## 7 · Sincronização de skills org-context (plugin marketplace)
 
 Regra completa em `context/org-skill-sync.md`, disparada por `LOADER.md` §8.
 
-Skills publicadas em `org-context` chegam por dois canais independentes (ver §6): fetch
-HTTP directo (sempre fresco, qualquer LLM) e o clone/cache local do marketplace de
-plugins do Claude Code (`claude plugin install`). O segundo **não se actualiza
-sozinho** — fica preso na versão instalada até correr
-`claude plugin marketplace update org-context` + `claude plugin update <plugin>@org-context`.
-
-Regra: sempre que se cria, edita ou remove um `SKILL.md` em `~/Projects/org-context` e
-se dá push, se a sessão for Claude Code com o plugin instalado, correr os dois comandos
-acima e avisar que é preciso reiniciar a sessão. Caso contrário (outro LLM, ou consumo
-só via fetch), nada a fazer — o próximo fetch já traz a versão nova.
+Dois canais: fetch HTTP (**Cursor** — sempre fresco) vs cache Claude Code
+(precisa de `claude plugin marketplace update` + `claude plugin update` após
+bump de versão). No Cursor, após push a `org-context`, basta o próximo fetch;
+actualizar o cache Claude é opcional e só relevante para sessões Claude Code.
 
 ## 8 · `brain-toggle` (soft / hard)
 
