@@ -26,6 +26,20 @@ O canal canónico no Cursor (e Codex, e qualquer LLM só-com-fetch) é **só** o
 HTTP raw listado aqui. O cache/marketplace Claude Code existe **apenas** para
 sessões Claude Code com plugins instalados.
 
+### Cursor — corte mecânico do cache (obrigatório na máquina)
+
+Regras no brain **não bastam**: o Cursor injecta skills de
+`~/.claude/plugins/cache/` quando o import third-party está ligado.
+
+1. **Cursor Settings → Rules, Skills, Subagents** → desligar
+   **«Include third-party Plugins, Skills, and other configs»**.
+2. Skills org no menu `/` vêm de stubs em `~/.cursor/skills/<nome>/SKILL.md`
+   (só descoberta). O stub manda fazer fetch do URL raw antes de executar.
+3. **Nova sessão** de chat (esta sessão já pode ter o cache injectado).
+
+Sem o passo 1, o IDE continua a listar paths do cache Claude em
+`available_skills` mesmo com este ficheiro actualizado.
+
 ## URLs a fazer fetch
 
 - http://git.planning4life.intranet/ricclemente/org-context/raw/branch/main/AGENTS.md
