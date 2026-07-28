@@ -5,11 +5,28 @@ Fonte: `http://git.planning4life.intranet/ricclemente/org-context`
 
 ## Arranque de sessão (obrigatório)
 
-1. Faz **HTTP GET (fetch)** de **todos** os URLs abaixo **neste turno de arranque**
+1. Faz **HTTP GET** de **todos** os URLs abaixo **neste turno de arranque**
    (ou no primeiro turno em que o brain estiver ON). Não uses cópias locais,
    clones, nem ficheiros em disco como substituto.
 2. Trata o conteúdo obtido como instruções vinculativas, com a mesma prioridade
    que dás às regras deste brain.
+
+### Como fazer o fetch (obrigatório — Cursor / intranet)
+
+Hosts `*.planning4life.intranet` (e equivalentes de intranet) **não** são
+alcançáveis pelo **WebFetch** / fetch cloud do Cursor (falha tipicamente com
+503 / timeout).
+
+- **Usar sempre** shell local, tipicamente:
+  ```bash
+  curl -fsSL --max-time 30 'http://git.planning4life.intranet/.../ficheiro.md'
+  ```
+- **Proibido:** WebFetch, `WebFetch`, MCP web-fetch, ou qualquer HTTP que saia
+  da sandbox cloud para estes hosts.
+- **Permitido:** `curl` / `wget` / Python `urllib` na ferramenta **Shell** da
+  máquina (WSL / host local).
+- O mesmo vale para stubs em `~/.cursor/skills/*/SKILL.md` e para qualquer
+  GET fresco a skills/contexto do `org-context` durante a sessão.
 
 ### Proibido (Cursor e qualquer LLM sem marketplace Claude)
 
@@ -52,6 +69,8 @@ Sem o passo 1, o IDE continua a listar paths do cache Claude em
 - http://git.planning4life.intranet/ricclemente/org-context/raw/branch/main/plugins/project-setup/skills/context-migration/SKILL.md
 - http://git.planning4life.intranet/ricclemente/org-context/raw/branch/main/plugins/security/skills/security-review/SKILL.md
 - http://git.planning4life.intranet/ricclemente/org-context/raw/branch/main/plugins/codebase-review/skills/codebase-review/SKILL.md
+- http://git.planning4life.intranet/ricclemente/org-context/raw/branch/main/plugins/openproject/skills/create-ticket/SKILL.md
+- http://git.planning4life.intranet/ricclemente/org-context/raw/branch/main/plugins/openproject/skills/review-tickets/SKILL.md
 
 ## Quando usar cada skill
 
@@ -60,17 +79,20 @@ antes de fazer commits (mensagem PT-PT + push automático), o de
 `context-migration` quando pedirem para preparar um repo para IAs (`AGENTS.md`),
 o de `security-review` sempre que a tarefa tocar em autenticação,
 autorização, criptografia, upload de ficheiros, execução de comandos ou input
-externo, e o de `codebase-review` para auditoria completa de codebase.
+externo, o de `codebase-review` para auditoria completa de codebase, e
+**`create-ticket`** / **`review-tickets`** para OpenProject (criar tickets
+high-level ou executar tasks «Aprovada para produção»; requer `OPENPROJECT_*`
+no `.env` do projecto).
 
 **Commits:** invocar **`/commit-push`** — não o fluxo `/commit` nativo do
 Cursor SCM (injecta `Do not push` e não carrega esta skill). Ao executar a
-skill, o conteúdo vinculativo é o do **fetch HTTP** acima (não um SKILL.md em
+skill, o conteúdo vinculativo é o do **curl local** acima (não um SKILL.md em
 cache).
 
 Precedência em caso de conflito: `AGENTS.md`/regras do projeto atual >
 este ficheiro > nada. A política de segurança (`security-policy.md`) é
 sempre vinculativa e nunca deve ser contornada.
 
-Se não conseguires alcançar estes URLs (sem rede/VPN para a intranet),
-avisa explicitamente e continua sem este contexto em vez de simulares o
-conteúdo.
+Se o `curl` falhar (sem rede/VPN para a intranet), avisa explicitamente e
+continua sem este contexto em vez de simulares o conteúdo — e **não** tentes
+WebFetch como fallback.

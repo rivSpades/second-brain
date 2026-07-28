@@ -15,19 +15,21 @@ comportamento diferente:
 
 | Mecanismo | Como consome | Fica actualizado sozinho? |
 |-----------|--------------|----------------------------|
-| Fetch via link (`org-context.md`) — **Cursor, Codex, e qualquer LLM sem plugins** | HTTP GET directo ao raw do ficheiro, **a cada sessão** | **Sim** — o próximo fetch já traz a versão nova |
+| Fetch via link (`org-context.md`) — **Cursor, Codex, e qualquer LLM sem plugins** | HTTP GET via **`curl` na Shell local** ao raw do ficheiro, **a cada sessão** (nunca WebFetch para intranet) | **Sim** — o próximo curl já traz a versão nova |
 | Plugin/marketplace nativo do **Claude Code** (`claude plugin install`) | Clone git local em `~/.claude/plugins/marketplaces/org-context` + cache versionado em `~/.claude/plugins/cache/` | **Não** — fica preso na versão instalada até `claude plugin update` |
 
-## Cursor: fetch fresco, nunca cache
+## Cursor: curl fresco, nunca cache nem WebFetch
 
 No **Cursor** (e em qualquer ferramenta que entre pelo brain):
 
-- Consumo = **só** fetch HTTP listado em `~/brain/org-context.md`.
+- Consumo = **só** `curl` na Shell local aos URLs listados em `~/brain/org-context.md`.
+- **Proibido** WebFetch / fetch cloud para hosts `*.intranet` (não alcança;
+  tipicamente 503).
 - **Proibido** ler ou executar skills a partir de
   `~/.claude/plugins/cache/org-context/**`, mesmo que o IDE as injecte em
   `available_skills`.
 - Depois de um push a `org-context`, **não** é preciso actualizar cache nenhum
-  para o Cursor — a próxima sessão (ou o próximo fetch) já traz o conteúdo novo.
+  para o Cursor — o próximo `curl` já traz o conteúdo novo.
 - Actualizar o cache Claude (`plugin marketplace update` / `plugin update`) é
   irrelevante para o Cursor; só serve sessões Claude Code.
 

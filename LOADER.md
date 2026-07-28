@@ -11,11 +11,13 @@ Ignora completamente o resto deste ficheiro. Não leias nada em `~/brain` durant
 ## Se STATUS for ON
 
 1. Lê `~/brain/index.md` para saberes o que existe e onde (routing).
-2. Lê `~/brain/org-context.md` e **faz fetch HTTP** do contexto e das skills da
-   organização aí descritas (raw Gitea, sem clone local, **sem**
+2. Lê `~/brain/org-context.md` e **faz fetch HTTP via shell local `curl`**
+   (nunca WebFetch cloud — intranet) do contexto e das skills da organização
+   aí descritas (raw Gitea, sem clone local, **sem**
    `~/.claude/plugins/cache/`) — isto aplica-se **sempre**, em especial no
    **Cursor**: cada sessão nova deve ir buscar conteúdo fresco; o cache de
    plugins do Claude Code **não** é fonte de verdade fora do Claude Code.
+   Detalhe do método: secção «Como fazer o fetch» em `org-context.md`.
 3. Faz lazy-load: só abras ficheiros de `wiki/`, `log.md` ou `raw/` quando forem relevantes para a tarefa atual. Não carregues tudo de uma vez.
 4. Nunca editar ficheiros dentro de `raw/` — é imutável (fonte primária, tal como foi capturada).
 5. Sínteses e notas vivem em `wiki/`. Novas entradas de histórico vão para `log.md` (append-only, nunca reescrever linhas antigas).

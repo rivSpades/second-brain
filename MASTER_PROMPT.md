@@ -127,9 +127,10 @@ URLs a fazer fetch (AGENTS.md, security-policy.md, coding-standards.md,
 glossary.md, skills.md, e os SKILL.md de review/**commit-push**/context-migration/
 security-review/**codebase-review**) e instrui a tratá-los como vinculativos.
 
-**Cursor (e Codex / só-fetch):** canal **único** = HTTP raw a cada sessão.
+**Cursor (e Codex / só-fetch):** canal **único** = HTTP raw a cada sessão,
+obtido com **`curl` na Shell local** (nunca WebFetch cloud — hosts intranet).
 **Proibido** usar `~/.claude/plugins/cache/org-context/**` — mesmo que o IDE
-injecte esses paths em available_skills, o agente ignora e faz fetch.
+injecte esses paths em available_skills, o agente ignora e faz curl.
 
 Precedência em conflito: regras do projeto atual > `org-context.md` >
 nada. `security-policy.md` nunca é contornável.
