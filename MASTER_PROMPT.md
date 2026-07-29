@@ -144,9 +144,18 @@ habilitados em `enabledPlugins`:
 Isto dá as mesmas skills tanto via fetch HTTP direto (para agentes sem
 suporte a plugins, ex. Codex) como via mecanismo nativo de plugins do
 Claude Code (autoinvocação por descrição, sem precisar de fetch manual).
-Ao recriar num Claude Code novo: instalar o marketplace
-`org-context` (`git.planning4life.intranet/ricclemente/org-context.git`) e
-habilitar os 3 plugins acima.
+
+**Automático em Claude Code novo**: regra em `~/.claude/CLAUDE.md` §
+"Marketplace org-context" faz o check + fix no arranque de qualquer sessão
+(paralelo ao check de symlinks de skills, §5) — não depender de copiar
+`~/.claude/settings.json` de máquina para máquina. Ver incidente/fix em
+`log.md` 2026-07-17.
+
+**Nota WebFetch**: este host (`git.planning4life.intranet`) é HTTP simples
+sem TLS válido — `WebFetch` faz upgrade forçado para HTTPS e falha com
+"certificate hostname mismatch". Usar sempre `curl`/Bash (fetch directo) ou
+os comandos nativos `claude plugin ...` (usam git internamente) para
+qualquer coisa deste repo, nunca `WebFetch`.
 
 ## 7 · Sincronização de skills org-context (plugin marketplace)
 

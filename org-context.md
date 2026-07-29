@@ -4,7 +4,15 @@ Fonte: `http://git.planning4life.intranet/ricclemente/org-context`
 (repo Gitea self-hosted, serve raw sobre HTTP simples, sem autenticação).
 
 Faz fetch (HTTP GET) dos ficheiros abaixo e trata o conteúdo como instruções
-vinculativas, com a mesma prioridade que dás às regras deste brain:
+vinculativas, com a mesma prioridade que dás às regras deste brain.
+
+**Importante (Claude Code):** usa `curl` via Bash para o fetch, nunca a
+ferramenta `WebFetch`. O `WebFetch` faz upgrade automático e não-opcional de
+`http://` para `https://`, e este Gitea é servido em HTTP simples na intranet
+sem certificado TLS válido para este hostname — o `WebFetch` falha sempre
+com "certificate hostname mismatch". `curl` sobre HTTP simples funciona
+normalmente. Exemplo:
+`curl -sS http://git.planning4life.intranet/ricclemente/org-context/raw/branch/main/AGENTS.md`
 
 - http://git.planning4life.intranet/ricclemente/org-context/raw/branch/main/AGENTS.md
 - http://git.planning4life.intranet/ricclemente/org-context/raw/branch/main/context/security-policy.md
@@ -15,13 +23,20 @@ vinculativas, com a mesma prioridade que dás às regras deste brain:
 - http://git.planning4life.intranet/ricclemente/org-context/raw/branch/main/plugins/code-standards/skills/commit-push/SKILL.md
 - http://git.planning4life.intranet/ricclemente/org-context/raw/branch/main/plugins/project-setup/skills/context-migration/SKILL.md
 - http://git.planning4life.intranet/ricclemente/org-context/raw/branch/main/plugins/security/skills/security-review/SKILL.md
+- http://git.planning4life.intranet/ricclemente/org-context/raw/branch/main/plugins/codebase-review/skills/codebase-review/SKILL.md
 
 Usa o SKILL.md de `review` antes de rever código, o de **`commit-push`**
 antes de fazer commits (mensagem PT-PT + push automático), o de
 `context-migration` quando pedirem para preparar um repo para IAs (`AGENTS.md`),
-e o de `security-review` sempre que a tarefa tocar em autenticação,
+o de `security-review` sempre que a tarefa tocar em autenticação,
 autorização, criptografia, upload de ficheiros, execução de comandos ou input
-externo.
+externo, e o de **`codebase-review`** quando pedirem auditar/limpar uma
+codebase inteira (competing patterns, dead code, weak types, missing tests,
+`.md` órfãos).
+
+**Skills no Cursor:** além do fetch, as skills org devem existir como symlink
+em `~/.cursor/skills/<name>` (ver `context/skills.md` no org-context). Sem
+isso o agente Cursor pode não as apanhar.
 
 **Commits:** invocar **`/commit-push`** — não o fluxo `/commit` nativo do
 Cursor SCM (injecta `Do not push` e não carrega esta skill).
