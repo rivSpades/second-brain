@@ -11,6 +11,17 @@
 | **Como entra em sessão** | `LOADER.md` manda carregar (condicional ou sempre) | Invocação explícita (`/nome`) ou autoinvocação da ferramenta |
 | **Registo** | `index.md` + passo em `LOADER.md` | `index.md` opcional; symlink `~/.claude/skills/` se Claude |
 
+### Skills de projeto vs skills do brain
+
+| | Skills do brain | Skills de projeto |
+|---|---|---|
+| **Onde ficam** | `~/brain/skills/<nome>/SKILL.md` | `<projeto>/.claude/skills/<nome>/SKILL.md` |
+| **Tipo de conteúdo** | Transversais a qualquer projecto (ex.: `brain-toggle`) | Específicas de um projecto (ex.: `pen` no EvPlanner) |
+| **Symlink** | `~/.claude/skills/<nome>` → `~/brain/skills/<nome>` | `~/.claude/skills/<nome>` → `<projeto>/.claude/skills/<nome>` |
+| **Quem as gere** | brain | o repositório/pasta do projecto |
+
+**Regra:** nunca colocar no brain uma skill cujo `description` ou conteúdo mencione um projecto específico ou um caminho absoluto para um projecto. Isso é sinal de que a skill pertence ao projecto.
+
 **Regra cross-tool:** sempre que criares **contexto** ou **skill**, tem de ser compatível com **qualquer LLM** (Cursor, Claude Code, Codex, etc.) via os ponteiros globais (`~/AGENTS.md`, `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md` → `LOADER.md`). Proibido:
 
 - Contexto só em plugin Cursor, User Rules só-Cursor, ou `skills/` (contexto não é skill).

@@ -28,7 +28,14 @@ Ignora completamente o resto deste ficheiro. Não leias nada em `~/brain` durant
    de implementar ou alterar código nesse projecto. Se a stack divergir do padrão
    (Next.js, CRA, Remix, etc.), adapta ao `Context.md` do projecto. Precedência:
    regras do projecto > `context/react-frontend.md`.
-8. **Skills do marketplace org-context (só Claude Code):** se estiveres a criar,
+8. **Skills de projeto (qualquer LLM):** skills específicas de um projecto vivem
+   **dentro desse projecto**, em `<projeto>/.claude/skills/<nome>/SKILL.md`. Para
+   ficarem disponíveis no Claude Code, têm um symlink em `~/.claude/skills/<nome>`
+   que aponta para esse caminho (e opcionalmente `~/.cursor/skills/<nome>` para
+   Cursor). O brain **não** guarda skills de projecto — só as skills genuinamente
+   transversais (ex.: `brain-toggle`). Ao criar uma skill nova de projecto:
+   criar `SKILL.md` no projecto → criar o symlink → confirmar com `ls -la ~/.claude/skills/`.
+9. **Skills do marketplace org-context (só Claude Code):** se estiveres a criar,
    editar ou remover um `SKILL.md` dentro de `~/Projects/org-context` e vais dar
    push a essa alteração, lê `~/brain/context/org-skill-sync.md` **antes de
    terminar a tarefa** — o marketplace de plugins do Claude Code tem cache local

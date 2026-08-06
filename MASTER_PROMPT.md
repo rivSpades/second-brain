@@ -117,7 +117,14 @@ Claude Code especificamente, não do brain):
 - Ao criar skill nova: criar `~/brain/skills/<nome>/SKILL.md` (frontmatter
   `name` + `description`), symlink imediato, confirmar com `ls -la`.
 
-Skill actual: `brain-toggle` (ver §8). Commits org: **`/commit-push`** (ver `org-context.md` → skill `commit-push`).
+Skills pessoais activas: `brain-toggle` (ver §8). Commits org: **`/commit-push`** (ver `org-context.md` → skill `commit-push`).
+
+**Skills de projecto não vivem no brain** (regra `AGENTS.md` § Contexto vs skills):
+ficam em `<projeto>/.claude/skills/<nome>/` com symlink em `~/.claude/skills/<nome>`
+e opcionalmente `~/.cursor/skills/<nome>` apontando **directamente** para o
+projecto (nunca para uma cópia no brain). Exemplo activo: `pen` em
+`~/Projects/EvPlanner/.claude/skills/pen/`. Registo das skills e onde vivem:
+`index.md` § Skills.
 
 ## 6 · Contexto da organização (`org-context.md`)
 
