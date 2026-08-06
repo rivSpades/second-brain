@@ -64,6 +64,7 @@ sincronização de skills (ver § 5).
 ```
 brain/
 ├── LOADER.md        # interruptor (§1)
+├── Context.md       # propósito, stack e mapa de documentação do brain
 ├── MASTER_PROMPT.md  # este ficheiro
 ├── AGENTS.md         # regras ingest/query/lint
 ├── index.md          # routing — lido sempre que STATUS=ON
@@ -72,6 +73,7 @@ brain/
 ├── context/           # regras cross-tool por stack/tópico (§7, §9) — org-skill-sync.md, react-frontend.md
 ├── raw/              # fontes imutáveis, nunca editadas depois de gravadas
 ├── wiki/              # sínteses derivadas de raw/, uma entrada por tópico
+├── scripts/           # automações cross-tool, incluindo o bridge do OpenCode
 └── skills/            # skills pessoais, fonte de verdade (§5)
 ```
 
@@ -197,7 +199,19 @@ ponteiros (`~/AGENTS.md`, `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`):
 
 Ao recriar numa máquina nova: garantir pasta `context/` com `react-frontend.md` e `LOADER.md` §7.
 
-## 10 · Fecho / verificação
+## 10 · OpenCode
+
+O OpenCode usa `~/.config/opencode/opencode.json`, com OpenRouter configurado
+por `OPENROUTER_API_KEY` e o modelo predefinido
+`openrouter/deepseek/deepseek-v4-flash-0731`.
+
+O script `scripts/sync-opencode-org-skills.sh` faz fetch fresco dos `SKILL.md`
+organizacionais para `~/.config/opencode/skills/org-context`. O OpenCode
+descobre automaticamente skills em `~/.config/opencode/skills/`,
+`~/.claude/skills/` e `~/.agents/skills/`, e a permissão global `skill: "*":
+"allow"` permite carregá-las sem confirmação.
+
+## 11 · Fecho / verificação
 
 `~/brain` é o próprio repositório git (`rivSpades/second-brain` no
 GitHub) — portável entre máquinas por `git clone`/`pull`, não por cópia
