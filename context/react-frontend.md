@@ -3,6 +3,13 @@
 > Carregado via `~/brain/LOADER.md` §7 quando o workspace é React (qualquer LLM com ponteiro para o brain).  
 > **Não substitui o projecto** — cada repo tem o seu `Context.md` com stack, produto e caminhos concretos.
 
+Overflow (lazy-load, só quando relevante):
+
+| Ficheiro | Quando ler |
+|----------|------------|
+| `react-frontend-structure.md` | Criar estrutura nova — template de pastas + convenções de nomes |
+| `react-frontend-detail.md` | Formulários/wizards, setup mobile `index.html`, anti-duplicação de componentes, loading/UX |
+
 ## Activação (stack compatível)
 
 Aplica **só** quando o workspace for frontend React:
@@ -50,59 +57,11 @@ Scripts habituais: `npm run dev`, `npm run build`, `npm run lint`.
 
 ---
 
-## 4. Estrutura de pastas (template)
+## 4. Estrutura de pastas
 
-```
-project/
-├── Context.md                 # Entrada — produto, stack, mapa de docs
-├── README.md                  # Setup, rotas, QA manual
-├── .env.example
-├── docs/
-│   ├── ARCHITECTURE.md
-│   ├── MAPPING.md             # data ↔ lib ↔ UI por domínio
-│   ├── DESIGN.md              # Design system — ler antes de UI
-│   ├── README.md              # Índice de APIs / integrações
-│   └── {DOMAIN}_API.md        # Um ficheiro por domínio de API
-├── .cursor/rules/
-│   ├── init.mdc               # alwaysApply — aponta para Context.md
-│   ├── architecture.mdc       # globs: src/**/*
-│   └── design.mdc             # globs: src/**/*
-├── public/
-└── src/
-    ├── main.jsx
-    ├── router.jsx
-    ├── index.css
-    ├── styles/                # tokens.css, temas
-    ├── constants/
-    ├── data/
-    │   ├── api.js             # HTTP único
-    │   ├── {domain}.js        # Façade — a UI importa daqui
-    │   ├── {domain}Api.js     # Endpoints + cache
-    │   └── mock/              # Fallback controlado por env
-    ├── lib/
-    │   ├── {domain}ApiMapper.js
-    │   ├── {domain}FormMapper.js
-    │   ├── {domain}Utils.js
-    │   └── validation.js
-    ├── components/
-    │   ├── ui/                # Design system
-    │   ├── layout/
-    │   └── {domain}/
-    ├── pages/{domain}/
-    ├── hooks/
-    └── store/                 # Context global (auth, tema, etc.)
-```
-
-### Convenções de nomes
-
-| Tipo | Padrão | Exemplo |
-|------|--------|---------|
-| Componentes | PascalCase | `Button.jsx` |
-| Páginas | PascalCase | `DashboardPage.jsx` |
-| Data / API | camelCase | `agenda.js`, `eventsApi.js` |
-| Lib | camelCase | `eventFormMapper.js` |
-| Hooks | use + PascalCase | `useScrollToTopOnChange.js` |
-| Context | PascalCase + Context | `AuthContext.jsx` |
+Template completo e convenções de nomes: `react-frontend-structure.md`.
+Pontos fixos: `src/data/` (camada de dados), `src/lib/` (mappers/utils),
+`src/components/{ui,layout,{domain}}`, `src/pages/`, `src/store/`.
 
 ---
 
@@ -163,17 +122,7 @@ Para lógica complexa em context: preferir `useReducer` a múltiplos `useState` 
 
 ## 8. Formulários e wizards
 
-Padrão multi-passo recomendado:
-
-1. Passos com ids estáveis (`categoria`, `tipo`, `identificação`, …).
-2. Seleção visual com componentes reutilizáveis do design system (`SelectableOptionTile`, `SelectableOptionCard`, etc.).
-3. Header com voltar/fechar + acções de passo no rodapé (Continuar / Guardar).
-4. Validação por passo antes de avançar; validação completa no submit.
-5. Ecrã de sucesso com acções opcionais (ex.: configurar alertas).
-
-Campos obrigatórios do payload: conforme `docs/{DOMAIN}_API.md`.
-
----
+Padrão multi-passo e validação por passo: `react-frontend-detail.md` § Formulários.
 
 ## 9. Design system e UI
 
@@ -183,6 +132,8 @@ Campos obrigatórios do payload: conforme `docs/{DOMAIN}_API.md`.
 4. Tokens semânticos (cores, superfícies, texto) — evitar hex solto em componentes.
 5. Animações com **Framer Motion**; alvos de toque ≥ 44×44px.
 6. `aria-label` nos controlos só com ícone.
+7. **Nunca duplicar** o mesmo componente visual em 2+ lugares — regra absoluta e detecção: `react-frontend-detail.md` § Reutilização.
+8. Setup mobile (`index.html` viewport + listeners iOS): `react-frontend-detail.md` § Setup mobile.
 
 ---
 
@@ -211,6 +162,7 @@ npm run build
 ```
 
 QA manual por módulo: documentar no `README.md` do projeto.
+Loading/UX percebida (skeletons, TanStack Query states): `react-frontend-detail.md` § Loading.
 
 ---
 
@@ -235,8 +187,6 @@ QA manual por módulo: documentar no `README.md` do projeto.
 - **Documentar** APIs e mapa de ficheiros ao adicionar domínios.
 - Comentários só onde a lógica de negócio não é óbvia.
 
----
-
 ## 14. Resumo arquitectural
 
 1. **`Context.md` primeiro** — depois o mapa de docs do próprio projeto.
@@ -246,35 +196,3 @@ QA manual por módulo: documentar no `README.md` do projeto.
 5. **Estado global mínimo** em `store/`.
 6. **Design system** em `components/ui/` + `docs/DESIGN.md`.
 7. **Documentação autocontida** — `Context.md`, `docs/`, `.cursor/rules/`.
-
----
-
-## 15. Loading & perceived performance
-
-Stack-agnostic; em projectos EvPlanner ver `.ai/context/loading-ux.md` (precedência projecto > brain).
-
-### Princípios
-
-1. **Shell nunca bloqueia** — header, navegação, FAB visíveis durante fetch.
-2. **Skeleton > spinner > texto** — layout-preserving (`animate-pulse`, altura ≈ conteúdo final).
-3. **Initial vs background** — `isPending && !data` → skeleton; `isFetching && data` → manter UI + hint opcional.
-4. **Stale-while-revalidate** — TanStack Query: `placeholderData: (prev) => prev`, `staleTime` coerente (30–60s overviews).
-5. **Queries independentes** — não OR-gate loading de secções que podem renderizar separadamente.
-
-### TanStack Query v5
-
-| Estado | Significado | UI |
-|--------|-------------|-----|
-| `isPending` | Primeira carga sem cache | Skeleton por secção |
-| `isFetching` | Refetch (pode ter cache) | Conteúdo anterior + indicador discreto |
-| `isLoading` | Deprecated — evitar | Usar hook/util que distingue pending vs fetching |
-
-### Acessibilidade
-
-- Skeleton: `aria-busy="true"` + `aria-label` de loading.
-- Tokens semânticos (`bg-muted`) — legível em dark/light.
-
-### QA mínimo
-
-- Round-trip navegação (A → B → A): conteúdo cache imediato, sem flash full-page loading.
-- Mudança de filtro/ciclo: só a secção afectada entra em skeleton.
