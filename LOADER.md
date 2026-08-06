@@ -41,3 +41,22 @@ Ignora completamente o resto deste ficheiro. Não leias nada em `~/brain` durant
    terminar a tarefa** — o marketplace de plugins do Claude Code tem cache local
    e não se actualiza sozinho com o push. **No Cursor isto não se aplica ao
    consumo:** o Cursor consome via fetch (§2), não via esse cache.
+10. **Multi agent CLI (qualquer LLM):** verifica `~/brain/.multi-agent-cli-status`.
+    Se `ON` e a task actual corresponder a uma entrada de
+    `~/brain/skills/multi-agent-cli/tasks.json` (plano detalhado simples/complexo,
+    implementação com plano aprovado, modificação/implementação directa de
+    código sem plano definido — pequena ou elaborada —, perguntas/interacção
+    sobre a codebase, pesquisa/exploração na web, QA pós-implementação,
+    `/codebase-review`, `/context-migration`, `/commit-push`, mockups/design
+    system) → segue
+    `~/brain/skills/multi-agent-cli/SKILL.md` e despacha automaticamente via
+    `dispatch.sh`/`dispatch-batch.sh` (sem pedir confirmação — decisão já tomada).
+    Se um input directo (sem plano) se revelar complexo demais para ir direito
+    à implementação, trocar silenciosamente para `plan-simple`/`plan-complex`
+    (e só depois `implement`) em vez de forçar `direct-edit-*` — mesma lógica de
+    escolher o `id` certo pelo teu julgamento, sem perguntar. Se a task for
+    super simples e não corresponder a nenhum `id` específico, usa `default`
+    de `tasks.json` (Deepseek v4 Flash 0731). Regra "agent
+    teams first": só despachar cross-CLI quando a CLI mapeada for diferente da
+    CLI da sessão actual; caso contrário usar subagent/Task tool nativo. Se
+    `OFF`, ignora e executa a task na sessão actual.

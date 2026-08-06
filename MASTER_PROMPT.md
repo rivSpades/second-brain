@@ -9,7 +9,7 @@
 > arquitetura; `log.md` é só histórico de eventos. Este ficheiro é o
 > retrato atual.
 
-Última sincronização: 2026-07-20.
+Última sincronização: 2026-08-06.
 
 ## 0 · Princípio
 
@@ -211,7 +211,42 @@ descobre automaticamente skills em `~/.config/opencode/skills/`,
 `~/.claude/skills/` e `~/.agents/skills/`, e a permissão global `skill: "*":
 "allow"` permite carregá-las sem confirmação.
 
-## 11 · Fecho / verificação
+## 12 · `multi-agent-cli` (orquestrador cross-tool)
+
+`~/brain/skills/multi-agent-cli/` — skill transversal que delega tasks para a
+combinação CLI+modelo mapeada em `tasks.json`, mesmo quando essa CLI é diferente
+da sessão actual (Cursor, Claude Code, OpenCode, Codex).
+
+- **Toggle:** `~/brain/.multi-agent-cli-status` (`ON`/`OFF`), controlado por
+  `scripts/toggle.sh {on|off|status}` — independente do `STATUS` do
+  `LOADER.md` (§1), mas só é consultado se o brain estiver `ON`.
+- **Mapping (fonte única):** `skills/multi-agent-cli/tasks.json` — array de
+  tasks com `id`, `write_mode` (`read-only`|`workspace`), `primary`/`fallback`
+  (`cli`, `model`, `slug`, `variant?`). Nunca duplicar este mapping.
+- **Dispatch real (não simulação por defeito):** `scripts/dispatch.sh --task
+  <id> --prompt "<texto>" [--cwd <path>] [--simulate]` invoca de facto
+  `opencode run -m <slug>`, `claude -p --model <slug>` ou `cursor-agent -p
+  --model <slug>` de forma não-interactiva, com `timeout`. Cadeia de fallback:
+  primário real → alternativo real (se configurado) → stub `/bin/echo`
+  (`status:"simulated"`, nunca `"ok"` inventado). Escreve
+  `~/brain/.multi-agent-cli/<timestamp>-<hash8>/<task_id>.json`.
+- **Paralelo:** `scripts/dispatch-batch.sh --cwd <path> --task id:prompt [--task
+  id:prompt ...]` lança cada task em background (`&`+`wait`), partilha o
+  prefixo de timestamp da batch, agrega tudo em `_batch-summary.json`.
+- **Regra "agent teams first":** subagents nativos/Task tool/agent teams
+  (incl. experimentais do OpenCode) continuam a ser a via preferida quando a
+  CLI mapeada é a mesma da sessão actual — o dispatcher cross-CLI só entra
+  quando a CLI mapeada difere da actual, ou o modelo só existe fora da sessão.
+- **Disparo automático:** sem pedir confirmação ao utilizador quando a task
+  corresponder ao mapping (decisão tomada com o utilizador; ver `LOADER.md` §10).
+- **Cross-tool:** symlinks em `~/.claude/skills/multi-agent-cli`,
+  `~/.config/opencode/skills/multi-agent-cli`, `~/.cursor/skills/multi-agent-cli`,
+  `~/.codex/skills/multi-agent-cli` → todos apontam para
+  `~/brain/skills/multi-agent-cli/` (fonte única, mesmo padrão do §5).
+- **Artefactos de run:** `~/brain/.multi-agent-cli/` é transitório (gitignored);
+  o toggle `~/brain/.multi-agent-cli-status` é versionado.
+
+## 13 · Fecho / verificação
 
 `~/brain` é o próprio repositório git (`rivSpades/second-brain` no
 GitHub) — portável entre máquinas por `git clone`/`pull`, não por cópia

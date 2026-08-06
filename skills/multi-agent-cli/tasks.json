@@ -1,0 +1,254 @@
+{
+  "version": 1,
+  "note": "Fonte única do mapping task -> CLI/modelo do orquestrador multi-agent-cli. Editar só aqui — nunca duplicar noutro ficheiro. Cross-tool via symlinks (ver SKILL.md).",
+  "tasks": [
+    {
+      "id": "default",
+      "description": "Catch-all para tasks super simples que não correspondem a nenhum outro id desta lista — usado por defeito, sem precisar de match explícito. Inclui /commit-push.",
+      "match": [
+        "/commit-push",
+        "commit-push",
+        "commit e push"
+      ],
+      "write_mode": "workspace",
+      "primary": {
+        "cli": "opencode",
+        "model": "Deepseek v4 Flash 0731",
+        "slug": "openrouter/deepseek/deepseek-v4-flash-0731"
+      },
+      "fallback": null
+    },
+    {
+      "id": "codebase-questions",
+      "description": "Perguntas sobre a codebase, interacção/explicação de código existente — não implementação nem plano.",
+      "match": [
+        "pergunta sobre a codebase",
+        "questions about the codebase",
+        "explicar código",
+        "dúvida sobre o código",
+        "codebase interaction"
+      ],
+      "write_mode": "read-only",
+      "primary": {
+        "cli": "opencode",
+        "model": "GPT-5.6 Luna",
+        "slug": "openrouter/openai/gpt-5.6-luna"
+      },
+      "fallback": null
+    },
+    {
+      "id": "plan-simple",
+      "description": "Plano detalhado para uma feature de código não muito complexa.",
+      "match": [
+        "plano detalhado de feature simples",
+        "plan detailed simple feature",
+        "planear feature não complexa"
+      ],
+      "write_mode": "read-only",
+      "primary": {
+        "cli": "opencode",
+        "model": "Muse Spark 1.2",
+        "slug": "openrouter/meta/muse-spark-1.2"
+      },
+      "fallback": null
+    },
+    {
+      "id": "plan-complex",
+      "description": "Plano detalhado para uma feature de código complexa.",
+      "match": [
+        "plano detalhado de feature complexa",
+        "plan detailed complex feature",
+        "planear feature complexa"
+      ],
+      "write_mode": "read-only",
+      "primary": {
+        "cli": "opencode",
+        "model": "Qwen3.8 Max",
+        "slug": "openrouter/qwen/qwen3.8-max"
+      },
+      "fallback": null
+    },
+    {
+      "id": "implement",
+      "description": "Implementação de código com um plano já aprovado.",
+      "match": [
+        "implementar plano aprovado",
+        "implement approved plan",
+        "executar plano no código"
+      ],
+      "write_mode": "workspace",
+      "primary": {
+        "cli": "opencode",
+        "model": "GPT-5.6 Luna",
+        "slug": "openrouter/openai/gpt-5.6-luna"
+      },
+      "fallback": null
+    },
+    {
+      "id": "websearch-exploration",
+      "description": "Pesquisa/exploração na web (investigação, levantamento de informação online) — não implementação de código.",
+      "match": [
+        "websearch exploration",
+        "pesquisa na web",
+        "exploração na web",
+        "investigação online",
+        "web research"
+      ],
+      "write_mode": "read-only",
+      "primary": {
+        "cli": "opencode",
+        "model": "Deepseek v4 Pro",
+        "slug": "openrouter/deepseek/deepseek-v4-pro",
+        "variant": "xHigh"
+      },
+      "fallback": null
+    },
+    {
+      "id": "direct-edit-small",
+      "description": "Modificação ou implementação de código pequena, a partir de input directo do utilizador — sem plano detalhado prévio.",
+      "match": [
+        "modificação pequena sem plano",
+        "pequena implementação directa",
+        "small direct code change",
+        "small modification without a plan",
+        "quick fix directo"
+      ],
+      "write_mode": "workspace",
+      "primary": {
+        "cli": "opencode",
+        "model": "Deepseek v4 Flash 0731",
+        "slug": "openrouter/deepseek/deepseek-v4-flash-0731"
+      },
+      "fallback": null
+    },
+    {
+      "id": "direct-edit-elaborate",
+      "description": "Modificação ou implementação de código mais elaborada, a partir de input directo do utilizador — sem plano detalhado prévio.",
+      "match": [
+        "modificação elaborada sem plano",
+        "implementação directa elaborada",
+        "elaborate direct code change",
+        "complex direct implementation without a plan"
+      ],
+      "write_mode": "workspace",
+      "primary": {
+        "cli": "opencode",
+        "model": "GPT-5.6 Luna",
+        "slug": "openrouter/openai/gpt-5.6-luna"
+      },
+      "fallback": null
+    },
+    {
+      "id": "qa",
+      "description": "QA testing depois da implementação.",
+      "match": [
+        "qa depois de implementação",
+        "qa testing after implementation",
+        "testar depois de implementar"
+      ],
+      "write_mode": "read-only",
+      "primary": {
+        "cli": "claude",
+        "model": "Claude Sonnet 5",
+        "slug": "sonnet"
+      },
+      "fallback": {
+        "cli": "opencode",
+        "model": "Gemini 3.1 Pro",
+        "slug": "openrouter/google/gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "id": "codebase-review",
+      "description": "Skill /codebase-review — auditoria completa de uma codebase.",
+      "match": [
+        "/codebase-review",
+        "auditoria de codebase",
+        "codebase review"
+      ],
+      "write_mode": "read-only",
+      "primary": {
+        "cli": "claude",
+        "model": "Claude Sonnet 5",
+        "slug": "sonnet"
+      },
+      "fallback": {
+        "cli": "opencode",
+        "model": "Gemini 3.1 Pro",
+        "slug": "openrouter/google/gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "id": "context-migration",
+      "description": "Skill /context-migration — migração para o padrão de contexto cross-tool AGENTS.md.",
+      "match": [
+        "/context-migration",
+        "migrar para agents.md",
+        "context migration"
+      ],
+      "write_mode": "workspace",
+      "primary": {
+        "cli": "opencode",
+        "model": "Qwen3.8 Max",
+        "slug": "openrouter/qwen/qwen3.8-max"
+      },
+      "fallback": null
+    },
+    {
+      "id": "mockup-design",
+      "description": "Desenho de mockups / design system.",
+      "match": [
+        "desenho de mockup",
+        "design system",
+        "/pen",
+        "mockup design"
+      ],
+      "write_mode": "workspace",
+      "primary": {
+        "cli": "claude",
+        "model": "Opus 5 (max)",
+        "slug": "opus"
+      },
+      "fallback": {
+        "cli": "opencode",
+        "model": "Kimi k3 Max",
+        "slug": "openrouter/moonshotai/kimi-k3",
+        "variant": "max"
+      }
+    },
+    {
+      "id": "plan-from-scratch",
+      "description": "Plano detalhado de um projecto inteiro de raiz (não uma feature isolada).",
+      "match": [
+        "plano detalhado de projecto do zero",
+        "plan detailed entire project from scratch",
+        "planear projecto inteiro de raiz"
+      ],
+      "write_mode": "read-only",
+      "primary": {
+        "cli": "claude",
+        "model": "Opus 5 (max)",
+        "slug": "opus"
+      },
+      "fallback": null
+    },
+    {
+      "id": "context-skill-brain-mgmt",
+      "description": "Gestão de regras de contexto, skills e second brain (AGENTS.md, CLAUDE.md, .ai/context, ~/brain, etc.).",
+      "match": [
+        "gestão de regras de contexto",
+        "gestão de skills",
+        "second brain",
+        "manage context rules and skills",
+        "brain toggle"
+      ],
+      "write_mode": "workspace",
+      "primary": {
+        "cli": "claude",
+        "model": "Claude Sonnet 5",
+        "slug": "sonnet"
+      },
+      "fallback": null
+    }
+  ]
+}

@@ -15,6 +15,7 @@ Routing: onde procurar o quê. Lê isto primeiro, depois faz lazy-load só do qu
 | Skill | Onde | Tipo |
 |---|---|---|
 | `brain-toggle` | `~/brain/skills/brain-toggle/` | Brain (transversal) |
+| `multi-agent-cli` | `~/brain/skills/multi-agent-cli/` | Brain (transversal) — orquestrador cross-CLI, mapping em `tasks.json` |
 | `pen` | `~/Projects/EvPlanner/.claude/skills/pen/` | Projecto (EvPlanner) |
 
 Skills de projecto vivem **dentro do projecto** e têm symlink em `~/.claude/skills/`. Ver `AGENTS.md` §Skills de projeto vs skills do brain.
