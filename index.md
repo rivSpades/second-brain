@@ -15,6 +15,9 @@ Routing: onde procurar o quê. Lê isto primeiro, depois faz lazy-load só do qu
 | Skill | Onde | Tipo |
 |---|---|---|
 | `brain-toggle` | `~/brain/skills/brain-toggle/` | Brain (transversal) |
+| `pen-create-design` | `~/brain/skills/pen-create-design/` | Brain (transversal) — constrói design system `.pen` de raiz |
+| `pen-update-design` | `~/brain/skills/pen-update-design/` | Brain (transversal) — corrige/completa design system `.pen` existente |
+| `pen` | `~/brain/skills/pen/` | Brain (transversal) — migração `.pen` ↔ código para um ecrã/componente |
 
 Skills de projecto vivem **dentro do projecto** e têm symlink em `~/.claude/skills/`. Ver `AGENTS.md` §Skills de projeto vs skills do brain.
 

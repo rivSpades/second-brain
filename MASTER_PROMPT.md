@@ -119,7 +119,9 @@ Claude Code especificamente, não do brain):
 - Ao criar skill nova: criar `~/brain/skills/<nome>/SKILL.md` (frontmatter
   `name` + `description`), symlink imediato, confirmar com `ls -la`.
 
-Skills pessoais activas: `brain-toggle` (ver §8). Commits org: **`/commit-push`** (ver `org-context.md` → skill `commit-push`).
+Skills pessoais activas: `brain-toggle` (ver §8), `pen-create-design`,
+`pen-update-design`, `pen` (migração `.pen` ↔ código, par das duas anteriores).
+Commits org: **`/commit-push`** (ver `org-context.md` → skill `commit-push`).
 
 **Skills de projecto não vivem no brain** (regra `AGENTS.md` § Contexto vs skills):
 ficam em `<projeto>/.claude/skills/<nome>/` com symlink em `~/.claude/skills/<nome>`
