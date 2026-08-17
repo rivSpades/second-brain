@@ -35,9 +35,12 @@ Ignora completamente o resto deste ficheiro. Não leias nada em `~/brain` durant
    Cursor). O brain **não** guarda skills de projecto — só as skills genuinamente
    transversais (ex.: `brain-toggle`). Ao criar uma skill nova de projecto:
    criar `SKILL.md` no projecto → criar o symlink → confirmar com `ls -la ~/.claude/skills/`.
-9. **Skills do marketplace org-context (só Claude Code):** se estiveres a criar,
-   editar ou remover um `SKILL.md` dentro de `~/Projects/org-context` e vais dar
-   push a essa alteração, lê `~/brain/context/org-skill-sync.md` **antes de
-   terminar a tarefa** — o marketplace de plugins do Claude Code tem cache local
-   e não se actualiza sozinho com o push. **No Cursor isto não se aplica ao
-   consumo:** o Cursor consome via fetch (§2), não via esse cache.
+9. **Skills do marketplace org-context (só Claude Code):** desde 2026-07-28 o
+   sync é automático (`autoUpdate` do marketplace + hook `SessionStart` que
+   auto-instala plugins novos — detalhe em `~/brain/context/org-skill-sync.md`).
+   Se estiveres a criar, editar ou remover um `SKILL.md` dentro de
+   `~/Projects/org-context` e vais dar push, lê esse ficheiro na mesma **antes de
+   terminar a tarefa** — continua a ser preciso subir a versão em `plugin.json`
+   manualmente, e é o sítio para troubleshooting se o hook falhar (VPN em baixo,
+   etc.). **No Cursor isto não se aplica ao consumo:** o Cursor consome via
+   fetch (§2), não via esse cache.

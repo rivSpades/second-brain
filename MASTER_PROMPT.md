@@ -124,9 +124,8 @@ Skills pessoais activas: `brain-toggle` (ver §8). Commits org: **`/commit-push`
 **Skills de projecto não vivem no brain** (regra `AGENTS.md` § Contexto vs skills):
 ficam em `<projeto>/.claude/skills/<nome>/` com symlink em `~/.claude/skills/<nome>`
 e opcionalmente `~/.cursor/skills/<nome>` apontando **directamente** para o
-projecto (nunca para uma cópia no brain). Exemplo activo: `pen` em
-`~/Projects/EvPlanner/.claude/skills/pen/`. Registo das skills e onde vivem:
-`index.md` § Skills.
+projecto (nunca para uma cópia no brain). Não há exemplo activo neste momento.
+Registo das skills e onde vivem: `index.md` § Skills.
 
 ## 6 · Contexto da organização (`org-context.md`)
 
@@ -160,12 +159,15 @@ codebase-review, …). Esse cache **não** alimenta o Cursor.
 
 ## 7 · Sincronização de skills org-context (plugin marketplace)
 
-Regra completa em `context/org-skill-sync.md`, disparada por `LOADER.md` §8.
+Regra completa em `context/org-skill-sync.md`, disparada por `LOADER.md` §9.
 
-Dois canais: fetch HTTP (**Cursor** — sempre fresco) vs cache Claude Code
-(precisa de `claude plugin marketplace update` + `claude plugin update` após
-bump de versão). No Cursor, após push a `org-context`, basta o próximo fetch;
-actualizar o cache Claude é opcional e só relevante para sessões Claude Code.
+Dois canais, **ambos automáticos desde 2026-07-28**: fetch HTTP (**Cursor** —
+sempre fresco a cada sessão) e cache Claude Code, agora mantida por
+`extraKnownMarketplaces.org-context.autoUpdate` + hook `SessionStart` →
+`scripts/sync-org-context-plugins.sh` (actualiza plugins instalados e instala
+plugins novos). Continua a ser preciso **bump manual da versão em `plugin.json`**
+ao editar uma skill, senão o update é no-op. Skills de um plugin acabado de
+instalar só ficam disponíveis na sessão seguinte.
 
 ## 8 · `brain-toggle` (soft / hard)
 
