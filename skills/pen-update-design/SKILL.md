@@ -70,6 +70,79 @@ description: >
 
 ---
 
+## Guardrails anti-"AI slop" (aplicar sempre, em qualquer Passo 4/5, qualquer projecto)
+
+> Fonte: skill pública [tasteskill.dev](https://www.tasteskill.dev/docs) / repo
+> [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) — catálogo de padrões
+> visuais e de copy que denunciam design gerado por IA sem curadoria. Aplica-se a
+> **qualquer** projecto/estilo corrigido por esta skill, não é opcional — o estilo já
+> estabelecido no `.pen` determina a estética, estas regras determinam se a correcção
+> mantém essa estética intencional ou introduz regressões genéricas.
+
+**Cor**
+- Máximo 1 accent color por `.pen`. Variações do mesmo accent (tom/opacidade) sim; uma
+  segunda cor de destaque "para variar", não.
+- Evitar roxo/violeta ou glow azul-roxo como accent por defeito ("Lila Rule") — é o tell
+  visual mais comum de design gerado por IA sem curadoria. Só usar se o estilo já
+  estabelecido no `.pen` o exigir explicitamente.
+- Sem preto puro (`#000000`) nem branco puro (`#FFFFFF`) nos tokens base — usar
+  off-black/off-white.
+- Sem glow externo por defeito. Acabamento premium/"glass": borda interior subtil +
+  sombra interior, não halo colorido à volta do elemento.
+- Color Consistency Lock: o accent já estabelecido usa-se em toda a página, nunca troca
+  de secção para secção — se a auditoria (Passo 1) encontrar uma segunda cor de destaque
+  a aparecer, isso é uma regressão a corrigir, não uma variante válida.
+
+**Forma e tema**
+- Shape Consistency Lock: um único sistema de raio de canto por `.pen` — divergências
+  encontradas na auditoria são regressão, corrigir para o sistema já estabelecido.
+- Page Theme Lock: um tema por página (não inverter light/dark a meio do scroll), salvo
+  excepção deliberada já documentada no `.pen`.
+
+**Composição** (relevante ao corrigir ecrãs inteiros, não só componentes — ver Passo 9)
+- Sem grelha de 3 cards iguais como padrão por defeito para secções de
+  serviços/funcionalidades — preferir assimetria, bento com nº de células = nº de itens,
+  ou zigzag limitado a no máximo 2 secções seguidas.
+- Eyebrow restraint: no máximo 1 eyebrow (label pequena em maiúsculas acima de um título
+  de secção) por cada 3 secções da página — nunca uma em cada secção.
+- Não repetir a mesma família de layout de secção mais que uma vez na mesma página.
+- Sem "split-header" (título grande + parágrafo pequeno a flutuar ao lado) por defeito —
+  uma secção, uma mensagem.
+
+**Hero**
+- Título máximo 2 linhas no desktop; subtítulo máximo ~20 palavras/3-4 linhas; CTA(s)
+  visível(eis) sem scroll.
+- Máximo 4 elementos de texto no hero (eyebrow opcional + título + subtítulo + CTAs) —
+  tagline extra, tira-teima de clientes, preço ou lista de features descem para secções
+  próprias.
+- Sem "scroll cues" decorativos (setas, "scroll ↓", rato animado).
+
+**Botões e formulários**
+- Contraste de botão obrigatório em todos os estados (default/hover/pressed/disabled/
+  focus) — nunca texto e fundo do mesmo tom.
+- Texto do botão nunca quebra linha; uma etiqueta por intenção de CTA em toda a página
+  (não misturar "Contactar"/"Fale connosco"/"Vamos conversar" para a mesma acção).
+- Placeholder nunca substitui label; label sempre visível.
+- Qualquer área clicável cumpre o alvo de toque mínimo definido nos tokens do projecto
+  (tipicamente 44px) mesmo que o visual pareça mais pequeno.
+
+**Testemunhos** (quando existirem no âmbito do `.pen`)
+- Máximo 3 linhas de citação; atribuição sempre com nome + função (+ empresa se
+  aplicável), nunca só um nome.
+
+**Copy visível ao utilizador** (quando esta skill também revê texto de UI)
+- Travessão (`—`/`–`) banido de todo o texto visível — títulos, botões, legendas, texto
+  de estado. Reestruturar com ponto, vírgula ou dois pontos. Não se aplica a documentação
+  interna do projecto (specs, PRDs, notas).
+- Sem verbos de enchimento genéricos ("revolucionar", "elevar o potencial") nem números
+  inventados com precisão falsa (`99%`, `4.2x`) sem fonte real.
+
+Ao classificar o Passo 1 (auditoria em modo diff), tratar qualquer violação destas regras
+como **regressão** (mesmo que o item de checklist correspondente esteja `✅`) — corrigir
+no mesmo Passo 4 que os gaps normais.
+
+---
+
 ## Passo 0 — Detectar contexto do projecto (obrigatório, sempre primeiro)
 
 Nunca assumir. No projecto actual (cwd):
@@ -285,6 +358,9 @@ específicos do `.pen` alvo.
 | Screenshot de um nó em tema dark sai com cores de tema light | O tema (`theme:{mode:"dark"}`) vive no frame de **board** ancestral, não se aplica a um screenshot de subnó isolado | Aplicar o token de fundo temático ao próprio nó antes do screenshot (reverter depois), ou verificar com `Get(id,{depth:N,resolveVariables:true})` em vez de confiar só no visual |
 | `execute({filePath:"..."})` parece ignorar o parâmetro | O MCP do Pencil lê sempre o documento activo no editor — `filePath` não muda isso | Não usar para comparar contra um snapshot do git — não serve para diff histórico |
 | Aviso `"fill_container… not inside a flexbox layout"` em nós que sabes estarem correctos | Falso positivo do validador quando o nó tem `enabled:false`, ou artefacto residual de um `Replace` recente a referir o id antigo já apagado | Confirmar com leitura fresca (`Get` + `ctx.problems`) antes de assumir que é um bug real |
+| `width`/`height` com referência a variável (`width:"$tap-target-min"`) é silenciosamente ignorado, sem erro — o nó colapsa para `fit_content` | `width`/`height` numéricos **não aceitam** `$token`, ao contrário de cor/padding/gap/cornerRadius/stroke, que aceitam normalmente | Chamar `GetVariables()`, ler o valor resolvido, e usar o número literal directamente em `width`/`height`. Confirmar com `Get`+`ctx.bounds` que a dimensão real bate com o esperado, sobretudo em alvos de toque (`tap-target-min`) |
+| Corriges `width`/`height` no componente reutilizável (master), mas instâncias (`ref`) já criadas ficam com a geometria antiga/colapsada | `ref` não recalcula geometria retroactivamente a partir do master depois de a instância já existir | Aplicar override explícito de `width`/`height` em cada instância já criada (`Update(instanceId,{width:...,height:...})`), ou — melhor — definir o tamanho numérico correcto no momento da criação do master, antes de instanciar |
+| `effect: {type:"shadow", shadowType:"inner", ...}` é gravado silenciosamente como `"outer"` — sem erro, sem aviso. Grave se usado para simular "fio de luz interior"/glass: o resultado é um HALO EXTERIOR colorido, exactamente o "AI slop" que as guardrails anti-slop proíbem | O Pencil não suporta inner shadow real neste momento; a propriedade é aceite no schema mas convertida ao gravar | **Nunca usar `effect` do tipo `shadow` para acabamento "interior".** Usar `stroke` com `strokeAlignment:"inner"` em vez disso — para um "fio de luz" (glass/highlight): `stroke: {type:"gradient", gradientType:"linear", rotation:180, size:{height:1}, colors:[{color:"$border-highlight",position:0},{color:"$border-subtle",position:1}]}, strokeWidth:"$border-width-hairline", strokeAlignment:"inner"` (receita validada em produção). Para uma sombra de profundidade lisa (ex. estado "pressed"): `stroke:"$token-de-sombra"` sólido, mesmo `strokeAlignment:"inner"`. **Numa auditoria (Passo 1) desta skill, uma query `Get`+visitor a contar `effect.shadowType==="outer"` cuja `color` referencie tokens de highlight/inset com contagem >0 é sempre uma regressão a corrigir no Passo 4, mesmo que o item de checklist correspondente esteja `✅`** |
 
 ## Passo 9 — Cobertura oportunista fora do baseline (não bloqueante)
 

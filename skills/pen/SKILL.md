@@ -63,6 +63,48 @@ description: >
 
 ---
 
+## Guardrails anti-"AI slop" (aplicar sempre que o Passo 2 desenha algo novo, ou o Passo 4 escreve markup/copy)
+
+> Fonte: skill pública [tasteskill.dev](https://www.tasteskill.dev/docs) / repo
+> [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) — catálogo de padrões
+> visuais e de copy que denunciam design gerado por IA sem curadoria. Esta skill (`/pen`)
+> não define o design system (isso é `pen-create-design`/`pen-update-design`), mas
+> **sempre** que o Passo 2 tem de desenhar algo novo para preencher um gap — ou o Passo 4
+> escreve copy nova ao migrar para código — as mesmas regras aplicam-se, para não
+> introduzir um "tell" genérico dentro de um `.pen` já curado.
+
+**Ao preencher um gap no Passo 2 (componente ou secção nova)**
+- Não introduzir uma segunda cor de destaque — usar só o accent já definido nos tokens
+  do `.pen` (`GetVariables()`), nunca inventar um roxo/azul-glow "de reserva".
+- Não introduzir glow externo se o `.pen` já resolve acabamento premium via borda
+  interior/sombra interior — manter o mesmo mecanismo, não um halo novo.
+- Respeitar o raio de canto já estabelecido (Shape Consistency Lock) e o tema já
+  estabelecido (Page Theme Lock) do `.pen` — nunca "só desta vez, porque fica bem".
+- Se o gap for uma secção de página inteira (não um componente): não repetir a mesma
+  família de layout de uma secção vizinha (ex. não colocar duas secções seguidas de
+  "3 cards iguais" ou dois zigzags consecutivos); no máximo 1 eyebrow por cada 3 secções.
+- Se o gap for um hero: título máx. 2 linhas, subtítulo máx. ~20 palavras, CTA(s)
+  visível(eis) sem scroll, máx. 4 elementos de texto no hero.
+- Qualquer área clicável nova respeita o alvo de toque mínimo já definido nos tokens do
+  projecto (tipicamente 44px), mesmo que o `.pen` antigo não o tivesse.
+
+**Ao escrever copy no Passo 4 (migração para código)**
+- Travessão (`—`/`–`) banido de todo o texto visível ao utilizador — títulos, botões,
+  legendas, mensagens de estado. Reestruturar com ponto, vírgula ou dois pontos. Isto
+  aplica-se independentemente de o texto vir do `.pen`, do código antigo, ou de teres de
+  o escrever de novo — se encontrares um travessão em copy visível durante a migração,
+  é um gap a corrigir, não preservar "porque já lá estava".
+- Contraste de botão obrigatório em todos os estados migrados (default/hover/pressed/
+  disabled/focus) — parte do Passo 5 (QA), não só estético.
+- Uma etiqueta por intenção de CTA no ecrã inteiro — se o código antigo tiver duas
+  etiquetas diferentes para a mesma acção (ex. "Contactar" num sítio e "Fale connosco"
+  noutro), unificar como parte da migração, não replicar a inconsistência.
+
+Não é preciso repetir a citação da fonte ao lançar o `Agent(model:"opus")` do Passo 2 —
+só incluir o resumo accionável relevante ao gap concreto que está a ser preenchido.
+
+---
+
 ## Passo 0 — Detectar contexto do projecto (obrigatório, sempre primeiro)
 
 Nunca assumir. No projecto actual (cwd):
@@ -725,6 +767,9 @@ Comportamento da ferramenta, não específico de nenhum projecto:
 | Screenshot de um nó em tema alternativo sai com cores do tema base | O tema vive no frame de **board** ancestral, não se aplica a um screenshot de subnó isolado | Aplicar o token de fundo temático ao próprio nó antes do screenshot (reverter depois), ou verificar com `Get(id,{depth:N,resolveVariables:true})` em vez de confiar só no visual |
 | `execute({filePath:"..."})` parece ignorar o parâmetro | O MCP do Pencil lê sempre o documento activo no editor — `filePath` não muda isso | Não usar para comparar contra um snapshot do git — não serve para diff histórico |
 | Aviso `"fill_container… not inside a flexbox layout"` em nós que sabes estarem correctos | Falso positivo do validador quando o nó tem `enabled:false`, ou artefacto residual de um `Replace` recente a referir o id antigo já apagado | Confirmar com leitura fresca (`Get` + `ctx.problems`) antes de assumir que é um bug real |
+| `width`/`height` com referência a variável (`width:"$tap-target-min"`) é silenciosamente ignorado, sem erro — o nó colapsa para `fit_content` | `width`/`height` numéricos **não aceitam** `$token`, ao contrário de cor/padding/gap/cornerRadius/stroke, que aceitam normalmente | Chamar `GetVariables()`, ler o valor resolvido, e usar o número literal directamente em `width`/`height`. Confirmar com `Get`+`ctx.bounds` que a dimensão real bate com o esperado, sobretudo em alvos de toque (`tap-target-min`) |
+| Corriges `width`/`height` no componente reutilizável (master), mas instâncias (`ref`) já criadas ficam com a geometria antiga/colapsada | `ref` não recalcula geometria retroactivamente a partir do master depois de a instância já existir | Aplicar override explícito de `width`/`height` em cada instância já criada (`Update(instanceId,{width:...,height:...})`), ou — melhor — definir o tamanho numérico correcto no momento da criação do master, antes de instanciar |
+| `effect: {type:"shadow", shadowType:"inner", ...}` é gravado silenciosamente como `"outer"` — sem erro, sem aviso. Grave se usado para simular "fio de luz interior"/glass: o resultado é um HALO EXTERIOR colorido, exactamente o "AI slop" que as guardrails anti-slop proíbem | O Pencil não suporta inner shadow real neste momento; a propriedade é aceite no schema mas convertida ao gravar | **Nunca usar `effect` do tipo `shadow` para acabamento "interior".** Usar `stroke` com `strokeAlignment:"inner"` em vez disso — para um "fio de luz" (glass/highlight): `stroke: {type:"gradient", gradientType:"linear", rotation:180, size:{height:1}, colors:[{color:"$border-highlight",position:0},{color:"$border-subtle",position:1}]}, strokeWidth:"$border-width-hairline", strokeAlignment:"inner"` (receita validada em produção). Para uma sombra de profundidade lisa (ex. estado "pressed"): `stroke:"$token-de-sombra"` sólido, mesmo `strokeAlignment:"inner"`. **Se o Passo 2 desta skill desenhar algo novo com acabamento "interior", auditar com `Get`+visitor a contar `effect.shadowType==="outer"` cuja `color` referencie tokens de highlight/inset — qualquer contagem >0 é este bug** |
 | Instância `ref` continua a renderizar o estado ANTIGO do master mesmo depois de confirmares por `Get` directo que o master já tem a propriedade nova | Refs criados antes da edição do master, com `descendants` ausente/`undefined` (nunca tocados), não recalculam automaticamente — `Update(instanceId,{descendants:{}})` (objecto vazio) também **não** força o recálculo | `Update(instanceId,{descendants:{<childId>:{<propriedade real>:...}}})` com um valor a sério (mesmo que redundante, igual ao do master) força a instância a repropagar |
 | Largura fixa em px que resolve o problema num master isolado (showcase) volta a quebrar em instâncias de página reais | Instâncias reais em layouts de coluna dividida têm MENOS largura disponível do que o showcase — o schema não suporta `%`/`vh`/`calc` (só px literal) | Antes de fixar qualquer largura, listar TODAS as instâncias reais e o `ctx.bounds.width` do CONTENTOR real de cada uma — se variar, precisas de overrides de largura por instância/grupo, não um valor único no master |
 
