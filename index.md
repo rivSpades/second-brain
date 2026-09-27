@@ -8,6 +8,7 @@ Routing: onde procurar o quê. Lê isto primeiro, depois faz lazy-load só do qu
 | React frontend — estrutura/nomes | `context/react-frontend-structure.md` | Overflow — template de pastas + convenções de nomes |
 | React frontend — detalhe | `context/react-frontend-detail.md` | Overflow — wizards, setup mobile, anti-duplicação, loading/UX |
 | Sincronização de skills org-context | `context/org-skill-sync.md` | Cursor = só fetch HTTP; Claude Code = sync automático (`autoUpdate` + hook `SessionStart`). Via `LOADER.md` §9 ao editar skills em `~/Projects/org-context` |
+| SEO / GEO (visibilidade em pesquisa tradicional e por IA) | `raw/checklist-seo/` | Biblioteca reutilizável entre projectos (18 ficheiros, 7 categorias: technical, ai-search-geo, on-page, keywords, off-page, content-marketing, social-media), baseada no blog do Semrush — usar ao trabalhar SEO/marketing digital em qualquer projecto |
 | _(ainda vazio)_ | `wiki/` | Preenche uma linha por tópico à medida que sintetizas material de `raw/` |
 
 ## Skills
@@ -18,6 +19,7 @@ Routing: onde procurar o quê. Lê isto primeiro, depois faz lazy-load só do qu
 | `pen-create-design` | `~/brain/skills/pen-create-design/` | Brain (transversal) — constrói design system `.pen` de raiz |
 | `pen-update-design` | `~/brain/skills/pen-update-design/` | Brain (transversal) — corrige/completa design system `.pen` existente |
 | `pen` | `~/brain/skills/pen/` | Brain (transversal) — migração `.pen` ↔ código para um ecrã/componente |
+| `marketing-review` | `~/brain/skills/marketing-review/` | Brain (transversal) — audita SEO/GEO de qualquer projecto contra `raw/checklist-seo/` e propõe plano faseado (revisão, não implementação) |
 
 Skills de projecto vivem **dentro do projecto** e têm symlink em `~/.claude/skills/`. Ver `AGENTS.md` §Skills de projeto vs skills do brain.
 

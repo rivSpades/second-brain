@@ -120,7 +120,9 @@ Claude Code especificamente, não do brain):
   `name` + `description`), symlink imediato, confirmar com `ls -la`.
 
 Skills pessoais activas: `brain-toggle` (ver §8), `pen-create-design`,
-`pen-update-design`, `pen` (migração `.pen` ↔ código, par das duas anteriores).
+`pen-update-design`, `pen` (migração `.pen` ↔ código, par das duas anteriores),
+`marketing-review` (audita SEO/GEO de qualquer projecto contra
+`raw/checklist-seo/` e propõe plano faseado — revisão, não implementação).
 Commits org: **`/commit-push`** (ver `org-context.md` → skill `commit-push`).
 
 **Skills de projecto não vivem no brain** (regra `AGENTS.md` § Contexto vs skills):
