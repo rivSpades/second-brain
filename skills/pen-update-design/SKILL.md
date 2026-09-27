@@ -57,7 +57,7 @@ description: >
 | Zero hardcode entre projectos | Nunca reutilizar paths/paletas/nomes de componentes de uma sessão anterior — derivar tudo no Passo 0 |
 | Fonte do tratamento visual | O `.pen` alvo identificado no Passo 0 — ler sempre dele (`GetVariables()`, `Get(nodeId)`), nunca inventar estilo de memória |
 | `.pen` legado do projecto (se existir) intocável nesta skill | Se um gap exigir mudar esse ficheiro, é fora de âmbito — avisar o utilizador, não mexer |
-| Mutações a QUALQUER `.pen` → modelo forte obrigatório | Lançar `Agent(model:"opus")` (ou o equivalente mais capaz disponível) — nunca um modelo leve a editar `.pen`; se o projecto tiver regra própria mais específica (ex. "Opus 5 ou Kimi k3"), segui-la |
+| Mutações a QUALQUER `.pen` → modelo forte obrigatório | Lançar `Agent(model:"opus")` (alias que resolve para o Opus mais recente, hoje **Opus 5.5** — nunca fixar 5 ou anterior; ou o equivalente mais capaz disponível) — nunca um modelo leve a editar `.pen`; se o projecto tiver regra própria mais específica (ex. "Opus 5.5 ou Kimi k3"), segui-la |
 | id + anotação já vêm no `.pen` | Componentes seguem tipicamente `ds/<categoria>/<componente>--<variante>` com uma anotação de texto ao lado com a string de classes literal — ler essa anotação em vez de adivinhar; se o `.pen` do projecto usar outra convenção, seguir a dele |
 | Baseline obrigatório = checklist.design/design-system | Os mesmos 4 foundations + 24 components (28 itens) que `pen-create-design` usa — sempre auditados nesta corrida |
 | Fonte da checklist = só a biblioteca local | `~/brain/raw/checklist-design/` — **nunca** aceder a checklist.design ao vivo a partir desta skill |
